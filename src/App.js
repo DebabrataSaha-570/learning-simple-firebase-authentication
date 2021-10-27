@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import initializeAuthentication from './Firebase/firebase.initialize';
-import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, signOut } from "firebase/auth";
 import { useState } from 'react';
 
 initializeAuthentication()
@@ -55,11 +55,25 @@ function App() {
         const credential = GithubAuthProvider.credentialFromError(error);
       });
   }
+
+  const handleSignOut = () => {
+    const auth = getAuth();
+    signOut(auth).then(() => {
+      setUser({})
+    }).catch((error) => {
+    });
+
+  }
   return (
     <div className="App">
-      <button onClick={handleGoogleSignIn}>Google SignIn</button>
-      <button onClick={handleGithubSignIn}>GitHub signIn</button>
-      <br />
+
+      {!user.name ?
+        <div>
+          <button onClick={handleGoogleSignIn}>Google SignIn</button>
+          <button onClick={handleGithubSignIn}>GitHub signIn</button>
+        </div> :
+
+        <button onClick={handleSignOut}>Sign Out</button>}
       {
         user.name && <div>
           <h2>Welcome {user.name}</h2>
